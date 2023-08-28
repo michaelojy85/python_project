@@ -1,0 +1,27 @@
+2023/08/28 14:31:32 test,line: 23     INFO | Logger object created successfully.
+2023/08/28 14:31:32 test,line: 52     INFO | Welcome to calculator!!
+2023/08/28 14:31:32 test,line: 61     INFO | Choice: 
+1. sum
+2. subtract
+3. division
+4. multiply
+5. square
+6. reciprocal
+7. square root
+E. Exit
+2023/08/28 14:31:37 test,line: 65     INFO | User selection: 1
+2023/08/28 14:31:38 test,line: 72     INFO | 1st number: 2
+2023/08/28 14:31:40 test,line: 75     INFO | 2nd number: 3
+2023/08/28 14:31:40 test,line: 92     INFO | Answer: 5
+2023/08/28 14:31:40 test,line: 52     INFO | Welcome to calculator!!
+2023/08/28 14:31:40 test,line: 61     INFO | Choice: 
+1. sum
+2. subtract
+3. division
+4. multiply
+5. square
+6. reciprocal
+7. square root
+E. Exit
+2023/08/28 14:31:45 test,line: 65     INFO | User selection: e
+2023/08/28 14:31:45 test,line: 68     INFO | Goodbye
