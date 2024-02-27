@@ -5,7 +5,7 @@ class IdentifyDimmConfig:
     def __init__(self, file_path):
         self.file_path = file_path
         self.dimm_config = {}
-
+        self.dimm = ''
     
     def identify_config(self):
         data = {}
@@ -20,11 +20,9 @@ class IdentifyDimmConfig:
                     self.dimm_config[f"Channel {i}"] = {}
 
                 if "\t\t\tDimm 0" in line:
-                    dimm = "Dimm 0"
-                    channel[dimm] = data
+                    channel["Dimm 0"] = data
                 elif "\t\t\tDimm 1" in line:
-                    dimm = "Dimm 1"
-                    channel[dimm] = data
+                    channel["Dimm 1"] = data
                 
                 indices = (
                             "DIMM Mfg ID", "DRAM Mfg ID", "Die Revision",
@@ -49,6 +47,8 @@ class IdentifyDimmConfig:
                 self.dimm_config[f"Channel {i}"] = channel
 
         print(json.dumps(self.dimm_config, indent=4))
+        
+        self.dimm, _ = list(channel.items())[0]
 
 
 class matchODTfromAblLog(IdentifyDimmConfig):
@@ -75,10 +75,9 @@ class matchODTfromAblLog(IdentifyDimmConfig):
 
         for i in range(0, 12):
             for line in f:
-                if f"Socket 1 Channel {i} Dimm 0" in line:
-                    removed_dimm_1 = line.split(",")[0]
-                    dimm_0 = removed_dimm_1.split(":")[-1].strip(" ")
-                    if self.dimm_config[f"Channel {i}"]["Dimm 0"]["Size"] == f"{dimm_0} GB":
+                if re.match(f"Socket 1 Channel {i} Dimm 0: (\d+),", line):
+                    dimm_size = re.findall('Dimm 0: (\d+),', line)[0]
+                    if self.dimm_config[f"Channel {i}"][self.dimm]["Size"] == f"{dimm_size} GB":
                         self.dimm_topology.append("1-of-1")
             
             if bool(self.dimm_topology) == False:           

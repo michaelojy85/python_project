@@ -75,8 +75,8 @@ class matchODTfromAblLog(IdentifyDimmConfig):
 
         for i in range(0, 12):
             for line in f:
-                if f"Socket 1 Channel {i} Dimm 0" in line:
-                    dimm_size = re.match(r': (\d+),', line)
+                if re.match(f"Socket 1 Channel {i} Dimm 0: (\d+),", line):
+                    dimm_size = re.findall('Dimm 0: (\d+),', line)[0]
                     if self.dimm_config[f"Channel {i}"][self.dimm]["Size"] == f"{dimm_size} GB":
                         self.dimm_topology.append("1-of-1")
             
@@ -111,9 +111,7 @@ class matchODTfromAblLog(IdentifyDimmConfig):
 
         matched = 0
         for line in f:
-            if re.search(r'(Dimm0_|Dimm1_|Override)', line):
-                continue
-            else:
+            if not re.search(r'(Dimm0_|Dimm1_|Override)', line):
                 matched += self.teminations_comparison(line, terminations)
 
         print(f"No. of terminations settings matched: {matched}")
@@ -316,11 +314,11 @@ class matchODTfromAblLog(IdentifyDimmConfig):
     def teminations_comparison(self, line, terminations):
         indices = (
                    "RttNomWr", "RttWr", "RttNomRd",
-                   "RttPark", "DqsRttPark", "POdtUp", "POdtDn"
+                   " RttPark", "DqsRttPark", "POdtUp", "POdtDn"
                   )
         for index in indices:
             if index in line:
-                if re.findall(str(terminations[index]), line):
+                if re.findall(str(terminations[index.lstrip(' ')]), line):
                     return 1
                 else:
                     print(f"ERROR: Termination mismatched: {line}")
