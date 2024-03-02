@@ -167,27 +167,10 @@ class matchODTfromAblLog(IdentifyDimmConfig):
         print(json.dumps(terminations, indent=4))    
 
         matched = 0
-        
-        if self.dimm_topology[0] == "1-of-1":
-            pattern = r'(DIMM 0 )'
-        elif self.dimm_topology[0] == "1-of-2":
-            pattern = r'(DIMM 1 )'
-        elif self.dimm_topology[0] == "2-of-2":
-            pattern = r'(DIMM 0 |DIMM 1 )'
-        
-        indices = (
-           "RttNomWr", "RttWr", f"RttNomRd", " RttPark", "DqsRttPark", "POdtUp", "POdtDn"
-          )
-                  
         for line in f:
-            if re.search(pattern, line):
-                matched += self.teminations_comparison(line, indices[:-2], terminations)
-            else:
-                matched += self.teminations_comparison(line, indices[-2:], terminations)
-        
-        print(f"No. of terminations settings matched: {matched}")
+            if not re.search(r'(Dimm0_|Dimm1_|Override)', line):
+                matched += self.teminations_comparison(line, terminations)
 
-        for line in f:
             if "PptControl:" in line:
                 if "0x0" not in line:
                     print(f"ERROR: PPT value mismatched: {line}")
@@ -406,7 +389,11 @@ class matchODTfromAblLog(IdentifyDimmConfig):
 
         return termination_settings[topology[0]][topology[1]][topology[2]]
 
-    def teminations_comparison(self, line, indices, terminations):                        
+    def teminations_comparison(self, line, terminations):
+        indices = (
+                   "RttNomWr", "RttWr", "RttNomRd",
+                   " RttPark", "DqsRttPark", "POdtUp", "POdtDn"
+                  )
         for index in indices:
             if index in line:
                 if re.findall(str(terminations[index.lstrip(' ')]), line):
