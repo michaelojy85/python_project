@@ -185,7 +185,7 @@ class matchODTfromAblLog(IdentifyDimmConfig):
             else:
                 matched += self.teminations_comparison(line, indices[-2:], terminations)
         
-        print(f"No. of terminations settings matched: {matched}")
+
 
         for line in f:
             if "PptControl:" in line:
